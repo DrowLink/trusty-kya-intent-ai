@@ -1,8 +1,14 @@
 // Direct migration script to populate Supabase with SEED_AGENTS and their reviews
 const { createClient } = require('@supabase/supabase-js');
 
-const url = 'https://your-project.supabase.co';
-const secretKey = 'your-supabase-service-key';
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+const secretKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
+
+if (!url || !secretKey) {
+  console.error('Error: Please provide SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.');
+  process.exit(1);
+}
+
 const client = createClient(url, secretKey, { auth: { persistSession: false } });
 
 async function run() {
