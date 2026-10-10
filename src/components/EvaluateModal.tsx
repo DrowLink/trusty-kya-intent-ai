@@ -291,12 +291,12 @@ export const EvaluateModal: React.FC<EvaluateModalProps> = ({
             <button
               type="button"
               onClick={() => {
-                setGithubUrl('https://github.com/DrowLink/trusty-ai');
-                handleAutoScanRepo('https://github.com/DrowLink/trusty-ai');
+                setGithubUrl('https://github.com/DrowLink/trusty-kya-intent-ai');
+                handleAutoScanRepo('https://github.com/DrowLink/trusty-kya-intent-ai');
               }}
               className="px-2 py-0.5 rounded-lg bg-white dark:bg-[#080c14] border border-slate-200/80 dark:border-white/[0.08] hover:border-emerald-500 hover:text-emerald-600 dark:hover:border-emerald-400 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300 font-mono text-[11px] transition"
             >
-              DrowLink/trusty-ai
+              DrowLink/trusty-kya-intent-ai
             </button>
           </div>
 
