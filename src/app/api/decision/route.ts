@@ -44,9 +44,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (amount === undefined || typeof amount !== 'number' || isNaN(amount)) {
+    if (amount === undefined || typeof amount !== 'number' || isNaN(amount) || amount <= 0 || amount > 10000000) {
       return NextResponse.json(
-        { success: false, error: 'Missing or invalid parameter: amount must be a number' },
+        { success: false, error: 'Invalid parameter: amount must be a positive number greater than 0 up to $10,000,000' },
         { status: 400 }
       );
     }

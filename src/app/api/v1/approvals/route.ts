@@ -22,8 +22,21 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { itemId, decision, note, reviewerEmail } = body;
 
-    if (!itemId || !decision) {
-      return NextResponse.json({ success: false, error: 'Missing required itemId or decision' }, { status: 400 });
+    const validDecisions = ['APPROVED_EXCEPTION', 'DECLINED', 'ADJUSTMENT_REQUESTED'];
+    if (!itemId || !decision || !validDecisions.includes(decision)) {
+      return NextResponse.json({ 
+        success: false, 
+        error: `Invalid request: itemId is required and decision must be one of: ${validDecisions.join(', ')}` 
+      }, { status: 400 });
+    }
+
+    // Ensure reviewer email or identity is provided
+    const finalReviewer = reviewerEmail?.trim() || (process.env.NODE_ENV !== 'production' ? 'dev-reviewer@trusty.bot' : null);
+    if (!finalReviewer) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Unauthorized: Reviewer email or corporate authentication required to resolve approval exceptions' 
+      }, { status: 401 });
     }
 
     const queue = await intentStore.getApprovalQueue();

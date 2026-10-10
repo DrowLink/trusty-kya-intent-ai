@@ -154,10 +154,18 @@ export async function scanRepositoryPermissions(
     combinedContent.includes('exec(') ||
     combinedContent.includes('shell=true') ||
     combinedContent.includes('psutil') ||
-    combinedContent.includes('bash')
+    combinedContent.includes('bash') ||
+    combinedContent.includes('popen') ||
+    combinedContent.includes('pty.') ||
+    combinedContent.includes('eval(') ||
+    combinedContent.includes('function(') ||
+    combinedContent.includes('__import__') ||
+    combinedContent.includes('getattr(') ||
+    combinedContent.includes('b64decode') ||
+    combinedContent.includes('shlex.')
   ) {
     detectedScopes.add('terminal:exec');
-    detectedFeatures.push('Shell / terminal command execution detected (e.g. subprocess, child_process)');
+    detectedFeatures.push('Shell / terminal command execution or dynamic evaluation detected (e.g. subprocess, exec, eval)');
     requiresHumanApproval = false; // Elevated risk: terminal commands without mandatory human gate
     
     // Check if sandboxed in container/isolated runtime via Dockerfile manifest

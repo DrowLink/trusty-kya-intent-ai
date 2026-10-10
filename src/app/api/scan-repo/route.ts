@@ -1,10 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scanRepositoryPermissions } from '@/lib/scanner/permissionScanner';
+import { getClientIp, checkRateLimit } from '@/lib/security/rateLimiter';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
+    const clientIp = getClientIp(request);
+    const rateLimit = checkRateLimit(clientIp, 15, 10 * 60 * 1000); // 15 scans per 10 min
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: `Rate limit exceeded. Please wait ${Math.ceil(rateLimit.resetInMs / 1000)}s before scanning another repository.` 
+        },
+        { 
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimit.resetInMs / 1000)) } 
+        }
+      );
+    }
+
     const body = await request.json();
     const { repositoryUrl } = body;
 

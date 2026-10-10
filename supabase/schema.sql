@@ -62,11 +62,21 @@ create index if not exists idx_agents_slug on public.agents (slug);
 -- Habilitar RLS en agents
 alter table public.agents enable row level security;
 
--- Políticas para agents:
+-- Políticas seguras para agents:
 -- 1. Cualquiera puede consultar los agentes del buró (lectura pública)
 create policy "Agents are viewable by everyone" 
   on public.agents for select using (true);
 
--- 2. Inserción y actualización permitida para usuarios autenticados y clave de servicio/anon
-create policy "Allow upsert for agents" 
-  on public.agents for all using (true) with check (true);
+-- 2. Inserción y actualización restringida a usuarios autenticados o service_role
+create policy "Agents authenticated write" 
+  on public.agents for insert 
+  with check (auth.uid() is not null or auth.jwt()->>'role' = 'service_role');
+
+create policy "Agents authenticated update" 
+  on public.agents for update 
+  using (auth.uid() is not null or auth.jwt()->>'role' = 'service_role');
+
+-- 3. Borrado restringido a service_role
+create policy "Agents delete service role only" 
+  on public.agents for delete 
+  using (auth.jwt()->>'role' = 'service_role');

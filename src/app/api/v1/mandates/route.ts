@@ -20,8 +20,13 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    if (!body.title || !body.budgetTotal) {
-      return NextResponse.json({ success: false, error: 'Missing required mandate fields' }, { status: 400 });
+    const budget = Number(body.budgetTotal);
+    if (!body.title || typeof body.title !== 'string' || body.title.trim().length < 3) {
+      return NextResponse.json({ success: false, error: 'Invalid mandate title: must be a string with at least 3 characters' }, { status: 400 });
+    }
+
+    if (isNaN(budget) || budget <= 0 || budget > 10000000) {
+      return NextResponse.json({ success: false, error: 'Invalid budgetTotal: must be a positive number up to $10,000,000' }, { status: 400 });
     }
 
     const newMandate: HumanMandate = {

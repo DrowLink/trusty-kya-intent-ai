@@ -4,11 +4,28 @@ import { evaluateAgentTrust } from '@/lib/scoring/engine';
 import { agentStore } from '@/lib/db/store';
 import { scanRepositoryPermissions } from '@/lib/scanner/permissionScanner';
 import { translatePermission } from '@/lib/scanner/permissionTranslator';
+import { getClientIp, checkRateLimit } from '@/lib/security/rateLimiter';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
+    const clientIp = getClientIp(request);
+    const rateLimit = checkRateLimit(clientIp, 20, 5 * 60 * 1000); // 20 evaluations per 5 min
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: `Audit quota exceeded for this IP. Please wait ${Math.ceil(rateLimit.resetInMs / 1000)}s.` 
+        },
+        { 
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateLimit.resetInMs / 1000)) } 
+        }
+      );
+    }
+
     const body = await request.json();
     await agentStore.hydrate();
     let { name, publisherName, domain, category, permissions, repositoryUrl, isSandboxed, requiresHumanApproval, framework } = body;
