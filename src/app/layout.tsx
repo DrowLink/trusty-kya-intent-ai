@@ -27,14 +27,14 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://trusty-ai.vercel.app'),
-  title: { default: 'TRUSTY.bot — Intent authorization for AI agent payments', template: '%s | TRUSTY.bot' },
-  description: 'Verify that agent purchases match human intent. Explore mandate checks for quantity, specifications and delivery across your financial workflows.',
+  metadataBase: new URL('https://trusty-kya-intent-ai.vercel.app'),
+  title: { default: 'TRUSTY.bot — KYA & Intent Authorization Protocol for AI Agents', template: '%s | TRUSTY.bot' },
+  description: 'Deterministic intent authorization and autonomous credit underwriting for AI agents purchasing on Brex, Ramp, Slash and Stripe rails.',
   applicationName: 'TRUSTY.bot',
   icons: { icon: '/icon.png', shortcut: '/icon.png', apple: '/icon.png' },
   manifest: '/manifest.json',
-  openGraph: { title: 'TRUSTY.bot — Human intent, intact.', description: 'Intent authorization for agent-powered financial workflows.', type: 'website', siteName: 'TRUSTY.bot', images: [{url: '/icon.png', width: 512, height: 512, alt: 'TRUSTY.bot'}] },
-  twitter: { card: 'summary', title: 'TRUSTY.bot — Human intent, intact.', description: 'Verify the mandate before the purchase proceeds.', images: ['/icon.png'] },
+  openGraph: { title: 'TRUSTY.bot — KYA & Intent Authorization for AI Agents', description: 'Deterministic intent authorization and autonomous credit underwriting for agent-powered finance.', type: 'website', siteName: 'TRUSTY.bot', images: [{url: '/icon.png', width: 512, height: 512, alt: 'TRUSTY.bot'}] },
+  twitter: { card: 'summary', title: 'TRUSTY.bot — KYA & Intent Authorization for AI Agents', description: 'Verify the mandate before the purchase proceeds.', images: ['/icon.png'] },
   alternates: { canonical: '/' },
 };
 
